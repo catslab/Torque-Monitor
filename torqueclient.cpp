@@ -49,12 +49,19 @@ void TorqueClient::readSocket()
 {
     if (!socket)
         return;
-
+ /*
     while (socket->canReadLine()) {
         QByteArray line = socket->readLine();
         emit messageReceived(socket->peerName(),
                              QString::fromUtf8(line.constData(), line.length()));
     }
+*/
+
+    QByteArray bytes;
+    qint64 bc = socket->bytesAvailable();
+    bytes.resize(bc);
+    socket->read(bytes.data(), bytes.size());
+    emit messageRawReceived( bytes );
 }
 //! [readSocket]
 

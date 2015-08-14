@@ -32,6 +32,7 @@ public slots:
 
 signals:
     void messageReceived(const QString &sender, const QString &message);
+    void messageRawReceived(const QByteArray &bytes);
     void connected(const QString &name);
     void disconnected();
 

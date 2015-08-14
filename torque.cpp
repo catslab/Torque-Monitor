@@ -138,6 +138,8 @@ void Torque::connectClicked()
         TorqueClient *client = new TorqueClient(this);
 qDebug() << "Connecting...";
 
+        connect(client, SIGNAL(messageRawReceived(QByteArray)),
+                this, SLOT(showRawMessage(QByteArray)));
         connect(client, SIGNAL(messageReceived(QString,QString)),
                 this, SLOT(showMessage(QString,QString)));
         connect(client, SIGNAL(disconnected()), this, SLOT(clientDisconnected()));
@@ -175,6 +177,16 @@ void Torque::showMessage(const QString &sender, const QString &message)
     QString labelBat;
       labelBat.setNum (valbatt, 'f',2);
     ui->battLabel->setText(labelBat);
+}
+//! [showMessage]
+
+//! [showRawMessage]
+void Torque::showRawMessage(const QByteArray &bytes)
+{
+    //ui->chat->insertPlainText(QString::fromUtf8("%1: %2").arg(sender, message));
+    ui->chat->ensureCursorVisible();
+    //ui->chat->setText(QString::fromUtf8("%d:%2").arg(bytes,message));
+    qDebug()<<bytes.size()<<" bytes :"<<bytes.data();
 }
 //! [showMessage]
 

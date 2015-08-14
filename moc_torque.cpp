@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_Torque_t {
-    QByteArrayData data[13];
-    char stringdata0[138];
+    QByteArrayData data[15];
+    char stringdata0[159];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -37,17 +37,20 @@ QT_MOC_LITERAL(4, 28, 14), // "connectClicked"
 QT_MOC_LITERAL(5, 43, 11), // "zeroClicked"
 QT_MOC_LITERAL(6, 55, 11), // "showMessage"
 QT_MOC_LITERAL(7, 67, 6), // "sender"
-QT_MOC_LITERAL(8, 74, 18), // "clientDisconnected"
-QT_MOC_LITERAL(9, 93, 9), // "connected"
-QT_MOC_LITERAL(10, 103, 4), // "name"
-QT_MOC_LITERAL(11, 108, 18), // "newAdapterSelected"
-QT_MOC_LITERAL(12, 127, 10) // "createMenu"
+QT_MOC_LITERAL(8, 74, 14), // "showRawMessage"
+QT_MOC_LITERAL(9, 89, 5), // "bytes"
+QT_MOC_LITERAL(10, 95, 18), // "clientDisconnected"
+QT_MOC_LITERAL(11, 114, 9), // "connected"
+QT_MOC_LITERAL(12, 124, 4), // "name"
+QT_MOC_LITERAL(13, 129, 18), // "newAdapterSelected"
+QT_MOC_LITERAL(14, 148, 10) // "createMenu"
 
     },
     "Torque\0sendMessage\0\0message\0connectClicked\0"
     "zeroClicked\0showMessage\0sender\0"
-    "clientDisconnected\0connected\0name\0"
-    "newAdapterSelected\0createMenu"
+    "showRawMessage\0bytes\0clientDisconnected\0"
+    "connected\0name\0newAdapterSelected\0"
+    "createMenu"
 };
 #undef QT_MOC_LITERAL
 
@@ -57,7 +60,7 @@ static const uint qt_meta_data_Torque[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       8,   14, // methods
+       9,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -65,16 +68,17 @@ static const uint qt_meta_data_Torque[] = {
        1,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   54,    2, 0x06 /* Public */,
+       1,    1,   59,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       4,    0,   57,    2, 0x08 /* Private */,
-       5,    0,   58,    2, 0x08 /* Private */,
-       6,    2,   59,    2, 0x08 /* Private */,
-       8,    0,   64,    2, 0x08 /* Private */,
-       9,    1,   65,    2, 0x08 /* Private */,
-      11,    0,   68,    2, 0x08 /* Private */,
-      12,    0,   69,    2, 0x08 /* Private */,
+       4,    0,   62,    2, 0x08 /* Private */,
+       5,    0,   63,    2, 0x08 /* Private */,
+       6,    2,   64,    2, 0x08 /* Private */,
+       8,    1,   69,    2, 0x08 /* Private */,
+      10,    0,   72,    2, 0x08 /* Private */,
+      11,    1,   73,    2, 0x08 /* Private */,
+      13,    0,   76,    2, 0x08 /* Private */,
+      14,    0,   77,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QString,    3,
@@ -83,8 +87,9 @@ static const uint qt_meta_data_Torque[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::QString, QMetaType::QString,    7,    3,
+    QMetaType::Void, QMetaType::QByteArray,    9,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,   10,
+    QMetaType::Void, QMetaType::QString,   12,
     QMetaType::Void,
     QMetaType::Void,
 
@@ -101,10 +106,11 @@ void Torque::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         case 1: _t->connectClicked(); break;
         case 2: _t->zeroClicked(); break;
         case 3: _t->showMessage((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
-        case 4: _t->clientDisconnected(); break;
-        case 5: _t->connected((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 6: _t->newAdapterSelected(); break;
-        case 7: _t->createMenu(); break;
+        case 4: _t->showRawMessage((*reinterpret_cast< const QByteArray(*)>(_a[1]))); break;
+        case 5: _t->clientDisconnected(); break;
+        case 6: _t->connected((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 7: _t->newAdapterSelected(); break;
+        case 8: _t->createMenu(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -144,13 +150,13 @@ int Torque::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 8)
+        if (_id < 9)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 8;
+        _id -= 9;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 8)
+        if (_id < 9)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 8;
+        _id -= 9;
     }
     return _id;
 }

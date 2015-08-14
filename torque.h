@@ -40,6 +40,7 @@ private slots:
     void connectClicked();
     void zeroClicked();
     void showMessage(const QString &sender, const QString &message);
+    void showRawMessage(const QByteArray &bytes);
 
    /* void clientConnected(const QString &name);
     void clientDisconnected(const QString &name);

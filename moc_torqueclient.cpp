@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_TorqueClient_t {
-    QByteArrayData data[10];
-    char stringdata0[96];
+    QByteArrayData data[12];
+    char stringdata0[121];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -34,16 +34,19 @@ QT_MOC_LITERAL(1, 13, 15), // "messageReceived"
 QT_MOC_LITERAL(2, 29, 0), // ""
 QT_MOC_LITERAL(3, 30, 6), // "sender"
 QT_MOC_LITERAL(4, 37, 7), // "message"
-QT_MOC_LITERAL(5, 45, 9), // "connected"
-QT_MOC_LITERAL(6, 55, 4), // "name"
-QT_MOC_LITERAL(7, 60, 12), // "disconnected"
-QT_MOC_LITERAL(8, 73, 11), // "sendMessage"
-QT_MOC_LITERAL(9, 85, 10) // "readSocket"
+QT_MOC_LITERAL(5, 45, 18), // "messageRawReceived"
+QT_MOC_LITERAL(6, 64, 5), // "bytes"
+QT_MOC_LITERAL(7, 70, 9), // "connected"
+QT_MOC_LITERAL(8, 80, 4), // "name"
+QT_MOC_LITERAL(9, 85, 12), // "disconnected"
+QT_MOC_LITERAL(10, 98, 11), // "sendMessage"
+QT_MOC_LITERAL(11, 110, 10) // "readSocket"
 
     },
     "TorqueClient\0messageReceived\0\0sender\0"
-    "message\0connected\0name\0disconnected\0"
-    "sendMessage\0readSocket"
+    "message\0messageRawReceived\0bytes\0"
+    "connected\0name\0disconnected\0sendMessage\0"
+    "readSocket"
 };
 #undef QT_MOC_LITERAL
 
@@ -53,26 +56,28 @@ static const uint qt_meta_data_TorqueClient[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       6,   14, // methods
+       7,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       3,       // signalCount
+       4,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    2,   44,    2, 0x06 /* Public */,
-       5,    1,   49,    2, 0x06 /* Public */,
-       7,    0,   52,    2, 0x06 /* Public */,
+       1,    2,   49,    2, 0x06 /* Public */,
+       5,    1,   54,    2, 0x06 /* Public */,
+       7,    1,   57,    2, 0x06 /* Public */,
+       9,    0,   60,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       8,    1,   53,    2, 0x0a /* Public */,
-       9,    0,   56,    2, 0x08 /* Private */,
-       5,    0,   57,    2, 0x08 /* Private */,
+      10,    1,   61,    2, 0x0a /* Public */,
+      11,    0,   64,    2, 0x08 /* Private */,
+       7,    0,   65,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QString, QMetaType::QString,    3,    4,
-    QMetaType::Void, QMetaType::QString,    6,
+    QMetaType::Void, QMetaType::QByteArray,    6,
+    QMetaType::Void, QMetaType::QString,    8,
     QMetaType::Void,
 
  // slots: parameters
@@ -90,11 +95,12 @@ void TorqueClient::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->messageReceived((*reinterpret_cast< const QString(*)>(_a[1])),(*reinterpret_cast< const QString(*)>(_a[2]))); break;
-        case 1: _t->connected((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 2: _t->disconnected(); break;
-        case 3: _t->sendMessage((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 4: _t->readSocket(); break;
-        case 5: _t->connected(); break;
+        case 1: _t->messageRawReceived((*reinterpret_cast< const QByteArray(*)>(_a[1]))); break;
+        case 2: _t->connected((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 3: _t->disconnected(); break;
+        case 4: _t->sendMessage((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 5: _t->readSocket(); break;
+        case 6: _t->connected(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -107,15 +113,21 @@ void TorqueClient::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
             }
         }
         {
+            typedef void (TorqueClient::*_t)(const QByteArray & );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&TorqueClient::messageRawReceived)) {
+                *result = 1;
+            }
+        }
+        {
             typedef void (TorqueClient::*_t)(const QString & );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&TorqueClient::connected)) {
-                *result = 1;
+                *result = 2;
             }
         }
         {
             typedef void (TorqueClient::*_t)();
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&TorqueClient::disconnected)) {
-                *result = 2;
+                *result = 3;
             }
         }
     }
@@ -146,13 +158,13 @@ int TorqueClient::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 6)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 6;
+        _id -= 7;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 6)
+        if (_id < 7)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 6;
+        _id -= 7;
     }
     return _id;
 }
@@ -165,15 +177,22 @@ void TorqueClient::messageReceived(const QString & _t1, const QString & _t2)
 }
 
 // SIGNAL 1
-void TorqueClient::connected(const QString & _t1)
+void TorqueClient::messageRawReceived(const QByteArray & _t1)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
 
 // SIGNAL 2
+void TorqueClient::connected(const QString & _t1)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 2, _a);
+}
+
+// SIGNAL 3
 void TorqueClient::disconnected()
 {
-    QMetaObject::activate(this, &staticMetaObject, 2, Q_NULLPTR);
+    QMetaObject::activate(this, &staticMetaObject, 3, Q_NULLPTR);
 }
 QT_END_MOC_NAMESPACE
