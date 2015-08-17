@@ -58,10 +58,19 @@ void TorqueClient::readSocket()
 */
 
     QByteArray bytes;
+    /*
     qint64 bc = socket->bytesAvailable();
-    bytes.resize(bc);
-    socket->read(bytes.data(), bytes.size());
-    emit messageRawReceived( bytes );
+    if (bc>27)
+    {
+        bytes.resize(bc);
+        socket->read(bytes.data(), bytes.size());
+        emit messageRawReceived( bytes );
+    }
+    */
+    if(socket->canReadLine()) {
+    bytes = socket->readLine().trimmed();
+    qDebug() << bytes;
+    }
 }
 //! [readSocket]
 
