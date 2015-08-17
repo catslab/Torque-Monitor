@@ -207,7 +207,7 @@ void Torque::showRawMessage(const QByteArray &bytes)
         {
             if ( couple[i] == "$B" )
             {
-                ui->battLabel->setText(couple[i+1]);
+                ui->battLabel->setText(QString::fromUtf8("%1: %2").arg(couple[i+1], "V"));
                 break;
             }
         }
