@@ -7,6 +7,7 @@
 #include "torque.h"
 #include "remoteselector.h"
 #include "torqueclient.h"
+#include "machineselector.h"
 
 #include <qbluetoothuuid.h>
 #include <qbluetoothserver.h>
@@ -31,6 +32,9 @@ Torque::Torque(QWidget *parent)
     connect(ui->quitButton, SIGNAL(clicked()), this, SLOT(accept()));
     connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(connectClicked()));
     connect(ui->zeroButton, SIGNAL(clicked()), this, SLOT(zeroClicked()));
+    connect(ui->pressionMoinsButton, SIGNAL(clicked()), this, SLOT(moinsClicked()));
+    connect(ui->pressionPlusButton, SIGNAL(clicked()), this, SLOT(plusClicked()));
+    connect(ui->configureButton, SIGNAL(clicked()), this, SLOT(configureClicked()));
     //createMenu();
     //! [Construct UI]
 
@@ -202,16 +206,8 @@ void Torque::showRawMessage(const QByteArray &bytes)
         parsedValue = couple[1].toInt();
         int displayValue = parsedValue - zeroValue;
         ui->torque_val->display(displayValue);
-
-        for( int i=1; i<chaine.size();i++ )
-        {
-            if ( couple[i] == "$B" )
-            {
-                ui->battLabel->setText(QString::fromUtf8("%1: %2").arg(couple[i+1], "V"));
-                break;
-            }
-        }
-
+        QStringList battery = couple[5].split(' ');
+        ui->battLabel->setText(QString::fromUtf8("%1 %2").arg(battery[0], "V"));
     }
 }
 //! [showMessage]
@@ -222,3 +218,46 @@ void Torque::zeroClicked()
     zeroValue = parsedValue;
 }
 //! [zeroClicked]
+
+//! [moinsClicked]
+void Torque::moinsClicked()
+{
+    qDebug()<<"moinsClicked";
+}
+//! [moinsClicked]
+
+//! [plusClicked]
+void Torque::plusClicked()
+{
+    qDebug()<<"plusClicked";
+}
+//! [plusClicked]
+
+//! [recordClicked]
+void Torque::recordClicked()
+{
+    qDebug()<<"recordClicked";
+}
+//! [recordClicked]
+
+//! [configureClicked]
+void Torque::configureClicked()
+{
+    qDebug()<<"configureClicked";
+    ui->configureButton->setEnabled(false);
+    machineSelector MachineSelector("","","",1);
+    if (MachineSelector.exec() == QDialog::Accepted)
+    {
+        qDebug()<<"machineSelector accepté fermé";
+        QString proprietaire = MachineSelector.proprio();
+        qDebug()<<"proprio:"<<proprietaire;
+        QString SerieMachine = MachineSelector.serie_machine();
+        qDebug()<<"machine:"<<SerieMachine;
+        QString SerieTete = MachineSelector.serie_tete();
+        qDebug()<<"tete:"<<SerieTete;
+    }
+
+
+    ui->configureButton->setEnabled(true);
+}
+//! [configureClicked]

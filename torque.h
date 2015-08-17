@@ -39,6 +39,10 @@ signals:
 private slots:
     void connectClicked();
     void zeroClicked();
+    void moinsClicked();
+    void plusClicked();
+    void recordClicked();
+    void configureClicked();
     void showMessage(const QString &sender, const QString &message);
     void showRawMessage(const QByteArray &bytes);
 

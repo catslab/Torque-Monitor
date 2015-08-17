@@ -7,16 +7,19 @@ SOURCES = \
     main.cpp \
     torque.cpp \
     remoteselector.cpp \
-    torqueclient.cpp
+    torqueclient.cpp \
+    machineselector.cpp
 
 HEADERS = \
     torque.h \
     remoteselector.h \
-    torqueclient.h
+    torqueclient.h \
+    machineselector.h
 
 FORMS = \
     torque.ui \
-    remoteselector.ui
+    remoteselector.ui \
+    machineselector.ui
 
 target.path = $$[home]/Torque Monitor
 INSTALLS += target
