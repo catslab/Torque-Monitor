@@ -186,7 +186,33 @@ void Torque::showRawMessage(const QByteArray &bytes)
     //ui->chat->insertPlainText(QString::fromUtf8("%1: %2").arg(sender, message));
     ui->chat->ensureCursorVisible();
     //ui->chat->setText(QString::fromUtf8("%d:%2").arg(bytes,message));
-    qDebug()<<bytes.size()<<" bytes :"<<bytes.data();
+
+    QString chaine(bytes);
+    chaine = chaine.simplified();
+    qDebug()<<bytes.size()<<" bytes :"<<chaine;
+    QStringList couple = chaine.split(',');
+    if ( bytes.size() == 27 )
+    {
+        parsedValue = couple[1].toInt();
+        int displayValue = parsedValue - zeroValue;
+        ui->torque_val->display(displayValue);
+    }
+    if ( bytes.size() == 44 )
+    {
+        parsedValue = couple[1].toInt();
+        int displayValue = parsedValue - zeroValue;
+        ui->torque_val->display(displayValue);
+
+        for( int i=1; i<chaine.size();i++ )
+        {
+            if ( couple[i] == "$B" )
+            {
+                ui->battLabel->setText(couple[i+1]);
+                break;
+            }
+        }
+
+    }
 }
 //! [showMessage]
 

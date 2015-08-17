@@ -49,27 +49,15 @@ void TorqueClient::readSocket()
 {
     if (!socket)
         return;
- /*
-    while (socket->canReadLine()) {
-        QByteArray line = socket->readLine();
-        emit messageReceived(socket->peerName(),
-                             QString::fromUtf8(line.constData(), line.length()));
-    }
-*/
 
     QByteArray bytes;
-    /*
     qint64 bc = socket->bytesAvailable();
-    if (bc>27)
+    if ((bc>26 && bc <30) || bc>43)
     {
         bytes.resize(bc);
-        socket->read(bytes.data(), bytes.size());
+        //socket->read(bytes.data(), bytes.size());
+         bytes = socket->readLine().trimmed();
         emit messageRawReceived( bytes );
-    }
-    */
-    if(socket->canReadLine()) {
-    bytes = socket->readLine().trimmed();
-    qDebug() << bytes;
     }
 }
 //! [readSocket]
