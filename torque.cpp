@@ -20,6 +20,7 @@
 #include <QDebug>
 #include <QDialog>
 #include <QMenuBar>
+#include <QtMath>
 
 static const QLatin1String serviceUuid("00001101-0000-1000-8000-00805f9b34fb");
 
@@ -29,12 +30,25 @@ Torque::Torque(QWidget *parent)
     //! [Construct UI]
     ui->setupUi(this);
     zeroValue = 0;
+    machine=0;
+    proprietaire="";
+    serieMachine="";
+    serieTete="";
+    ui->recordButton->setDisabled(true);
+    ui->pressionPlusButton->setDisabled(true);
+    ui->pressionMoinsButton->setDisabled(true);
     connect(ui->quitButton, SIGNAL(clicked()), this, SLOT(accept()));
     connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(connectClicked()));
     connect(ui->zeroButton, SIGNAL(clicked()), this, SLOT(zeroClicked()));
     connect(ui->pressionMoinsButton, SIGNAL(clicked()), this, SLOT(moinsClicked()));
     connect(ui->pressionPlusButton, SIGNAL(clicked()), this, SLOT(plusClicked()));
     connect(ui->configureButton, SIGNAL(clicked()), this, SLOT(configureClicked()));
+    connect(ui->recordButton,SIGNAL(clicked()),this,SLOT(recordClicked()));
+    connect(ui->envoyerButton,SIGNAL(clicked()),this, SLOT(envoyerClicked()));
+
+    recordTimer = new QTimer(this);
+        connect(recordTimer, SIGNAL(timeout()), this, SLOT(stopRecord()));
+
     //createMenu();
     //! [Construct UI]
 
@@ -160,30 +174,6 @@ qDebug() << "Start client";
 //! [Connect to remote service]
 
 
-//! [showMessage]
-void Torque::showMessage(const QString &sender, const QString &message)
-{
-    //ui->chat->insertPlainText(QString::fromUtf8("%1: %2").arg(sender, message));
-    ui->chat->ensureCursorVisible();
-    ui->chat->setText(QString::fromUtf8("%1").arg(message));
-    QString subString = message.left(4);
-    bool ok;
-    parsedValue = subString.toUInt(&ok, 16);
-    if (!ok)
-    {
-        qDebug()<< "erreur parsing:"<<subString;
-    }
-    int displayValue = parsedValue - zeroValue;
-    ui->torque_val->display(displayValue);
-    subString = message.mid(18,4);
-    qDebug()<<"batt:"<<subString;
-    float valbatt = subString.toUInt(&ok, 16)/2000;
-    QString labelBat;
-      labelBat.setNum (valbatt, 'f',2);
-    ui->battLabel->setText(labelBat);
-}
-//! [showMessage]
-
 //! [showRawMessage]
 void Torque::showRawMessage(const QByteArray &bytes)
 {
@@ -197,17 +187,22 @@ void Torque::showRawMessage(const QByteArray &bytes)
     QStringList couple = chaine.split(',');
     if ( bytes.size() == 27 )
     {
-        parsedValue = couple[1].toInt();
+        parsedValue = round(couple[1].toInt()/arrondi)*arrondi;
         int displayValue = parsedValue - zeroValue;
         ui->torque_val->display(displayValue);
     }
     if ( bytes.size() == 44 )
     {
-        parsedValue = couple[1].toInt();
+        parsedValue = round(couple[1].toInt()/arrondi)*arrondi;
         int displayValue = parsedValue - zeroValue;
         ui->torque_val->display(displayValue);
         QStringList battery = couple[5].split(' ');
         ui->battLabel->setText(QString::fromUtf8("%1 %2").arg(battery[0], "V"));
+    }
+    if (recordTimer->isActive())
+    {
+        torqueArray[pressionCompteur][compteurSamples[pressionCompteur]] = parsedValue;
+        compteurSamples[pressionCompteur]++;
     }
 }
 //! [showMessage]
@@ -223,6 +218,18 @@ void Torque::zeroClicked()
 void Torque::moinsClicked()
 {
     qDebug()<<"moinsClicked";
+    if ( !ui->pressionPlusButton->isEnabled())
+        ui->pressionPlusButton->setDisabled(false);
+    pressionCompteur --;
+    pressionCourant = pressionCompteur*pressionPas;
+    qDebug()<<"Pression demandée:"<<pressionCourant;
+    if ( pressionCourant <= pression_min[machine] )
+    {
+        pressionCourant = pression_min[machine];
+        ui->pressionMoinsButton->setDisabled(true);
+        pressionCompteurMin = pressionCompteur;
+    }
+    ui->pressLbl->setText(QString::number(pressionCourant));
 }
 //! [moinsClicked]
 
@@ -230,6 +237,18 @@ void Torque::moinsClicked()
 void Torque::plusClicked()
 {
     qDebug()<<"plusClicked";
+    if ( !ui->pressionMoinsButton->isEnabled())
+        ui->pressionMoinsButton->setDisabled(false);
+
+    pressionCompteur ++;
+    pressionCourant = pressionCompteur*pressionPas;
+    if ( pressionCourant >= pression_max[machine] )
+    {
+        pressionCourant = pression_max[machine];
+        ui->pressionPlusButton->setDisabled(true);
+        pressionCompteurMax = pressionCompteur;
+    }
+    ui->pressLbl->setText(QString::number(pressionCourant));
 }
 //! [plusClicked]
 
@@ -237,27 +256,109 @@ void Torque::plusClicked()
 void Torque::recordClicked()
 {
     qDebug()<<"recordClicked";
+    ui->recordButton->setDisabled(true);
+    compteurSamples[pressionCompteur]=0;
+    sommeTorque =0;
+    recordTimer->setSingleShot(true);
+    recordTimer->start(1000);
+
 }
 //! [recordClicked]
+
+//! [stopRecord]
+void Torque::stopRecord()
+{
+    qDebug()<<"stopRecord";
+    ui->recordButton->setDisabled(false);
+    qDebug()<<"stopRecord";
+    qDebug()<<"Samples comptés:"<<compteurSamples[pressionCompteur];
+    qDebug()<<"Pour pression no:"<<pressionCompteur;
+    if (compteurSamples[pressionCompteur] > 0 )
+    {
+        for (int a=0; a<compteurSamples[pressionCompteur]; a++)
+        {
+            sommeTorque +=torqueArray[pressionCompteur][a];
+        }
+        sommeTorque = round(sommeTorque / compteurSamples[pressionCompteur]);
+        ui->torqueMoyen->display(sommeTorque);
+
+    }
+
+}
+//! [stopRecord]
 
 //! [configureClicked]
 void Torque::configureClicked()
 {
     qDebug()<<"configureClicked";
     ui->configureButton->setEnabled(false);
-    machineSelector MachineSelector("","","",1);
+    machineSelector MachineSelector(proprietaire,serieTete,serieMachine,machine);
     if (MachineSelector.exec() == QDialog::Accepted)
     {
         qDebug()<<"machineSelector accepté fermé";
-        QString proprietaire = MachineSelector.proprio();
+        proprietaire = MachineSelector.get_proprio();
         qDebug()<<"proprio:"<<proprietaire;
-        QString SerieMachine = MachineSelector.serie_machine();
-        qDebug()<<"machine:"<<SerieMachine;
-        QString SerieTete = MachineSelector.serie_tete();
-        qDebug()<<"tete:"<<SerieTete;
+        serieMachine = MachineSelector.get_serie_machine();
+        qDebug()<<"machine:"<<serieMachine;
+        serieTete = MachineSelector.get_serie_tete();
+        qDebug()<<"tete:"<<serieTete;
+        machine = MachineSelector.get_type_machine();
+        qDebug()<<"machine:"<<machine;
+        ui->pressLbl->setText(QString::number(pression_min[machine]));
+        qDebug()<<"P min:"<<pression_min[machine];
+        qDebug()<<"P max:"<<pression_max[machine];
+        ui->recordButton->setDisabled(false);
+        ui->pressionPlusButton->setDisabled(false);
+        ui->pressionMoinsButton->setDisabled(true);
+        ui->proprioLabel->setText(proprietaire);
+        ui->machine_label->setText(serieMachine);
+        ui->tete_label->setText(serieTete);
+
+        pressionCourant = pression_min[machine];
+        pressionCompteur = qFloor(pression_min[machine]/pressionPas);
+        pressionCompteurMin = pressionCompteur;
+        pressionCompteurMax = qCeil(pression_max[machine]/pressionPas);
+        if ( pressionCompteurMax*pressionPas < pression_max[machine])
+            pressionCompteurMax++;
+        qDebug()<<"Palier max:"<<pressionCompteurMax;
+        for ( int i = 0; i < pressionCompteurMax+1 ; i++ )
+        {
+            compteurSamples[i] = 0;
+        }
     }
-
-
     ui->configureButton->setEnabled(true);
 }
 //! [configureClicked]
+
+//! [envoyerClicked]
+void Torque::envoyerClicked()
+{
+    qDebug()<<"envoyerClicked";
+    qDebug()<<"Min pression:"<<pressionCompteurMin;
+    qDebug()<<"Max pression:"<<pressionCompteurMax;
+    int palierpression = 0;
+
+    for ( int i=pressionCompteurMin; i < pressionCompteurMax+1; i++ )
+    {
+        qDebug()<<"Nb samples "<<compteurSamples[i]<<" pour palier:"<<i;
+        sommeTorque = 0;
+
+        for (int j=0; j<compteurSamples[i]; j++)
+        {
+            sommeTorque +=torqueArray[i][j];
+        }
+
+        if (compteurSamples[i]>0)
+            sommeTorque = round(sommeTorque / compteurSamples[i]);
+
+        palierpression = i*pressionPas;
+
+        if ( palierpression >= pression_max[machine] )
+        {
+            palierpression = pression_max[machine];
+        }
+        qDebug()<<"Torque moy:"<<sommeTorque<<" pour palier no:"<<i<<" et pression:"<<palierpression;
+    }
+
+}
+//! [envoyerClicked]

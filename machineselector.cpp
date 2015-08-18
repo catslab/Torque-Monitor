@@ -7,12 +7,16 @@ machineSelector::machineSelector(QString txt_proprio, QString txt_tete, QString 
     ui(new Ui::machineSelector)
 {
     ui->setupUi(this);
-    if ( type_machine == 0)
-        ui->radio_R2D->setChecked(true);
-    else if ( type_machine == 1)
-        ui->radio_EM1->setChecked(true);
-    else
-        ui->radio_ET1->setChecked(true);
+    ui->machineGroup->setId(ui->radio_R2D,0);
+    ui->machineGroup->setId(ui->radio_EM1,1);
+    ui->machineGroup->setId(ui->radio_ET1,2);
+    machine = type_machine;
+    proprietaire = txt_proprio;
+    serieMachine = txt_machine;
+    serieTete = txt_tete;
+    updateFields();
+    connect(ui->effacerButton,SIGNAL(clicked()),this,SLOT(effacer()));
+
 }
 
 machineSelector::~machineSelector()
@@ -20,23 +24,47 @@ machineSelector::~machineSelector()
     delete ui;
 }
 
-QString machineSelector::proprio()
+int machineSelector::get_type_machine()
+{
+    qDebug()<<"Appel proprio";
+    machine = ui->machineGroup->checkedId();
+    return machine;
+}
+
+QString machineSelector::get_proprio()
 {
     qDebug()<<"Appel proprio";
     proprietaire = ui->proprioEdit->text();
     return proprietaire;
 }
 
-QString machineSelector::serie_machine()
+QString machineSelector::get_serie_machine()
 {
     qDebug()<<"Appel serie_machine";
     serieMachine = ui->machineEdit->text();
     return serieMachine;
 }
 
-QString machineSelector::serie_tete()
+QString machineSelector::get_serie_tete()
 {
     qDebug()<<"Appel serie_tete";
     serieTete = ui->teteEdit->text();
     return serieTete;
+}
+
+void machineSelector::updateFields()
+{
+    ui->machineGroup->button(machine)->setChecked(true);
+    ui->proprioEdit->setText(proprietaire);
+    ui->machineEdit->setText(serieMachine);
+    ui->teteEdit->setText(serieTete);
+}
+
+void machineSelector::effacer()
+{
+    machine = 0;
+    proprietaire="";
+    serieMachine="";
+    serieTete="";
+    updateFields();
 }

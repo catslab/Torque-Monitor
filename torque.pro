@@ -19,7 +19,8 @@ HEADERS = \
 FORMS = \
     torque.ui \
     remoteselector.ui \
-    machineselector.ui
+    machineselector.ui \
+    dialog.ui
 
 target.path = $$[home]/Torque Monitor
 INSTALLS += target

@@ -13,6 +13,7 @@
 #include <qbluetoothhostinfo.h>
 
 #include <QDebug>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 class QMenu;
@@ -29,6 +30,12 @@ class Torque : public QDialog
 {
     Q_OBJECT
 
+
+    const int pressionPas = 250;
+    const int pression_max[3]= {2400,2300,3000};
+    const int pression_min[3] = {1000,1000,750};
+    const int arrondi = 20;
+
 public:
     Torque(QWidget *parent = 0);
     ~Torque();
@@ -43,18 +50,13 @@ private slots:
     void plusClicked();
     void recordClicked();
     void configureClicked();
-    void showMessage(const QString &sender, const QString &message);
     void showRawMessage(const QByteArray &bytes);
-
-   /* void clientConnected(const QString &name);
-    void clientDisconnected(const QString &name);
-    */
     void clientDisconnected();
     void connected(const QString &name);
-
     void newAdapterSelected();
-
     void createMenu();
+    void stopRecord();
+    void envoyerClicked();
 
 
 private:
@@ -63,7 +65,6 @@ private:
     Ui_Torque *ui;
     int zeroValue;
     unsigned int parsedValue;
-    //TorqueServer *server;
     QList<TorqueClient *> clients;
     QList<QBluetoothHostInfo> localAdapters;
 
@@ -72,5 +73,20 @@ private:
     QMenuBar *menuBar;
     QMenu *fileMenu;
     QAction *exitAction;
+
+    int machine;
+    int pressionCourant;
+    int pressionCompteur;
+    QString serieMachine;
+    QString serieTete;
+    QString proprietaire;
+
+    QTimer *recordTimer;
+    int compteurSamples[100];
+    int32_t sommeTorque;
+    int torqueArray[15][100];
+    int pressionCompteurMin;
+    int pressionCompteurMax;
+
 };
 //! [declaration]

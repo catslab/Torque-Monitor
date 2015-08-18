@@ -14,17 +14,24 @@ class machineSelector : public QDialog
 public:
     explicit machineSelector(QString txt_proprio, QString txt_tete, QString txt_machine, int type_machine, QWidget *parent = 0);
     ~machineSelector();
-    int machine =0;
 
-    QString proprio();
-    QString serie_machine();
-    QString serie_tete();
+    int get_type_machine();
+    QString get_proprio();
+    QString get_serie_machine();
+    QString get_serie_tete();
+
+private slots:
+    void effacer();
 
 private:
     Ui::machineSelector *ui;
+
+    int machine;
     QString serieMachine;
     QString serieTete;
     QString proprietaire;
+    void updateFields();
+
 };
 
 #endif // MACHINESELECTOR_H
