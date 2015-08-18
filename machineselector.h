@@ -22,6 +22,7 @@ public:
 
 private slots:
     void effacer();
+    void fichier();
 
 private:
     Ui::machineSelector *ui;
@@ -31,6 +32,7 @@ private:
     QString serieTete;
     QString proprietaire;
     void updateFields();
+
 
 };
 

@@ -22,6 +22,7 @@
 #include <QMenuBar>
 #include <QtMath>
 
+
 static const QLatin1String serviceUuid("00001101-0000-1000-8000-00805f9b34fb");
 
 Torque::Torque(QWidget *parent)
@@ -359,6 +360,7 @@ void Torque::envoyerClicked()
         }
         qDebug()<<"Torque moy:"<<sommeTorque<<" pour palier no:"<<i<<" et pression:"<<palierpression;
     }
+
 
 }
 //! [envoyerClicked]
