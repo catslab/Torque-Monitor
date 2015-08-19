@@ -35,6 +35,7 @@ class Torque : public QDialog
     const int pression_max[3]= {2400,2300,3000};
     const int pression_min[3] = {1000,1000,750};
     const int arrondi = 50;
+    const int tempsEregistrement=2000;
 
 public:
     Torque(QWidget *parent = 0);

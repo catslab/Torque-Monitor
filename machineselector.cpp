@@ -1,6 +1,7 @@
 #include "machineselector.h"
 #include "ui_machineselector.h"
 #include <QDebug>
+#include <QPushButton>
 
 machineSelector::machineSelector(QString txt_proprio, QString txt_tete, QString txt_machine, int type_machine, QWidget *parent) :
     QDialog(parent),
@@ -14,8 +15,12 @@ machineSelector::machineSelector(QString txt_proprio, QString txt_tete, QString 
     proprietaire = txt_proprio;
     serieMachine = txt_machine;
     serieTete = txt_tete;
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
     updateFields();
-    connect(ui->effacerButton,SIGNAL(clicked()),this,SLOT(effacer()));
+    connect(ui->buttonBox->button(QDialogButtonBox::Reset),SIGNAL(clicked()),this,SLOT(effacer()));
+    connect(ui->proprioEdit,SIGNAL(textChanged(QString)),this,SLOT(checkLineEdits()));
+    connect(ui->machineEdit,SIGNAL(textChanged(QString)),this,SLOT(checkLineEdits()));
+    connect(ui->teteEdit,SIGNAL(textChanged(QString)),this,SLOT(checkLineEdits()));
 }
 
 machineSelector::~machineSelector()
@@ -66,5 +71,15 @@ void machineSelector::effacer()
     serieMachine="";
     serieTete="";
     updateFields();
+}
+
+void machineSelector::checkLineEdits()
+{
+    bool ok = !ui->proprioEdit->text().isEmpty()
+    && !ui->machineEdit->text().isEmpty()
+    && !ui->teteEdit->text().isEmpty();
+
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(ok);
+    ui->buttonBox->button(QDialogButtonBox::Ok);
 }
 

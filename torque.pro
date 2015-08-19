@@ -17,10 +17,10 @@ HEADERS = \
     machineselector.h
 
 FORMS = \
-    torque.ui \
     remoteselector.ui \
     machineselector.ui \
-    dialog.ui
+    torque-old.ui \
+    torque.ui
 
 target.path = $$[home]/Torque Monitor
 INSTALLS += target

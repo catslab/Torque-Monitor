@@ -22,6 +22,7 @@ public:
 
 private slots:
     void effacer();
+    void checkLineEdits();
 
 
 private:

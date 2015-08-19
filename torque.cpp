@@ -40,6 +40,7 @@ Torque::Torque(QWidget *parent)
     ui->recordButton->setDisabled(true);
     ui->pressionPlusButton->setDisabled(true);
     ui->pressionMoinsButton->setDisabled(true);
+    ui->sauverButton->setDisabled(true);
     connect(ui->quitButton, SIGNAL(clicked()), this, SLOT(accept()));
     connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(connectClicked()));
     connect(ui->zeroButton, SIGNAL(clicked()), this, SLOT(zeroClicked()));
@@ -56,20 +57,20 @@ Torque::Torque(QWidget *parent)
     //! [Construct UI]
 
     localAdapters = QBluetoothLocalDevice::allDevices();
-    if (localAdapters.count() < 2) {
-        ui->localAdapterBox->setVisible(false);
-    } else {
-        //we ignore more than two adapters
-        ui->localAdapterBox->setVisible(true);
-        ui->firstAdapter->setText(tr("Default (%1)", "%1 = Bluetooth address").
-                                  arg(localAdapters.at(0).address().toString()));
-        ui->secondAdapter->setText(localAdapters.at(1).address().toString());
-        ui->firstAdapter->setChecked(true);
-        connect(ui->firstAdapter, SIGNAL(clicked()), this, SLOT(newAdapterSelected()));
-        connect(ui->secondAdapter, SIGNAL(clicked()), this, SLOT(newAdapterSelected()));
-        QBluetoothLocalDevice adapter(localAdapters.at(0).address());
-        adapter.setHostMode(QBluetoothLocalDevice::HostDiscoverable);
-    }
+//    if (localAdapters.count() < 2) {
+//        //ui->localAdapterBox->setVisible(false);
+//    } else {
+//        //we ignore more than two adapters
+//        ui->localAdapterBox->setVisible(true);
+//        ui->firstAdapter->setText(tr("Default (%1)", "%1 = Bluetooth address").
+//                                  arg(localAdapters.at(0).address().toString()));
+//        ui->secondAdapter->setText(localAdapters.at(1).address().toString());
+//        ui->firstAdapter->setChecked(true);
+//        connect(ui->firstAdapter, SIGNAL(clicked()), this, SLOT(newAdapterSelected()));
+//        connect(ui->secondAdapter, SIGNAL(clicked()), this, SLOT(newAdapterSelected()));
+//        QBluetoothLocalDevice adapter(localAdapters.at(0).address());
+//        adapter.setHostMode(QBluetoothLocalDevice::HostDiscoverable);
+//    }
 
     //! [Get local device name]
     localName = QBluetoothLocalDevice().name();
@@ -84,7 +85,7 @@ void Torque::createMenu()
     fileMenu = new QMenu(tr("&File"), this);
     exitAction = fileMenu->addAction(tr("E&xit"));
     menuBar->addMenu(fileMenu);
-    ui->verticalLayout->insertWidget(0,menuBar);
+    //ui->verticalLayout->insertWidget(0,menuBar);
     connect(exitAction, SIGNAL(triggered()), this, SLOT(zeroClicked()));
 }
 
@@ -97,7 +98,7 @@ Torque::~Torque()
 //! [connected]
 void Torque::connected(const QString &name)
 {
-    ui->chat->insertPlainText(QString::fromUtf8("Connecté à %1.\n").arg(name));
+    ui->chat_label->setText(QString::fromUtf8("Connecté à %1.\n").arg(name));
 }
 
 void Torque::newAdapterSelected()
@@ -117,10 +118,10 @@ int Torque::adapterFromUserSelection() const
     int result = 0;
     QBluetoothAddress newAdapter = localAdapters.at(0).address();
 
-    if (ui->secondAdapter->isChecked()) {
-        newAdapter = localAdapters.at(1).address();
-        result = 1;
-    }
+//    if (ui->secondAdapter->isChecked()) {
+//        newAdapter = localAdapters.at(1).address();
+//        result = 1;
+//    }
     return result;
 }
 //! [connected]
@@ -232,7 +233,7 @@ void Torque::moinsClicked()
         ui->pressionMoinsButton->setDisabled(true);
         pressionCompteurMin = pressionCompteur;
     }
-    ui->pressLbl->setText(QString::number(pressionCourant));
+    ui->pressLbl->setText(QString::number(pressionCourant)+" Psi");
 }
 //! [moinsClicked]
 
@@ -251,7 +252,7 @@ void Torque::plusClicked()
         ui->pressionPlusButton->setDisabled(true);
         pressionCompteurMax = pressionCompteur;
     }
-    ui->pressLbl->setText(QString::number(pressionCourant));
+    ui->pressLbl->setText(QString::number(pressionCourant)+" Psi");
 }
 //! [plusClicked]
 
@@ -262,8 +263,9 @@ void Torque::recordClicked()
     ui->recordButton->setDisabled(true);
     compteurSamples[pressionCompteur]=0;
     sommeTorque =0;
+    ui->torqueMoyen->display(0);
     recordTimer->setSingleShot(true);
-    recordTimer->start(1000);
+    recordTimer->start(tempsEregistrement);
 
 }
 //! [recordClicked]
@@ -307,7 +309,7 @@ void Torque::configureClicked()
         qDebug()<<"tete:"<<serieTete;
         machine = MachineSelector.get_type_machine();
         qDebug()<<"machine:"<<machine;
-        ui->pressLbl->setText(QString::number(pression_min[machine]));
+        ui->pressLbl->setText(QString::number(pression_min[machine])+" Psi");
         qDebug()<<"P min:"<<pression_min[machine];
         qDebug()<<"P max:"<<pression_max[machine];
         ui->recordButton->setDisabled(false);
@@ -330,6 +332,7 @@ void Torque::configureClicked()
         }
     }
     ui->configureButton->setEnabled(true);
+    ui->sauverButton->setEnabled(true);
 }
 //! [configureClicked]
 
