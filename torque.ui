@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>600</height>
+    <height>628</height>
    </rect>
   </property>
   <property name="palette">
@@ -493,7 +493,7 @@
         </spacer>
        </item>
        <item row="4" column="0">
-        <widget class="QPushButton" name="envoyerButton">
+        <widget class="QPushButton" name="sauverButton">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -507,7 +507,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Envoyer</string>
+          <string>Sauvegarder</string>
          </property>
         </widget>
        </item>

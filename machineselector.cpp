@@ -1,7 +1,6 @@
 #include "machineselector.h"
 #include "ui_machineselector.h"
 #include <QDebug>
-#include <QFileDialog>
 
 machineSelector::machineSelector(QString txt_proprio, QString txt_tete, QString txt_machine, int type_machine, QWidget *parent) :
     QDialog(parent),
@@ -17,8 +16,6 @@ machineSelector::machineSelector(QString txt_proprio, QString txt_tete, QString 
     serieTete = txt_tete;
     updateFields();
     connect(ui->effacerButton,SIGNAL(clicked()),this,SLOT(effacer()));
-    connect(ui->fichierButton,SIGNAL(clicked()),this,SLOT(fichier()));
-
 }
 
 machineSelector::~machineSelector()
@@ -71,14 +68,3 @@ void machineSelector::effacer()
     updateFields();
 }
 
-void machineSelector::fichier()
-{
-    QString s = QFileDialog::getSaveFileName(
-                this,
-                "Choose a filename to save under",
-    "/home",
-    "Text (*.txt *.csv)"
-
-     );
-qDebug()<<"fichier: "<<s;
-}

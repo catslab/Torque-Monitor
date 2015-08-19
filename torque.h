@@ -34,7 +34,7 @@ class Torque : public QDialog
     const int pressionPas = 250;
     const int pression_max[3]= {2400,2300,3000};
     const int pression_min[3] = {1000,1000,750};
-    const int arrondi = 20;
+    const int arrondi = 50;
 
 public:
     Torque(QWidget *parent = 0);
@@ -56,7 +56,7 @@ private slots:
     void newAdapterSelected();
     void createMenu();
     void stopRecord();
-    void envoyerClicked();
+    void sauverClicked();
 
 
 private:
@@ -87,6 +87,8 @@ private:
     int torqueArray[15][100];
     int pressionCompteurMin;
     int pressionCompteurMax;
+
+    QString fichierSauvegarde;
 
 };
 //! [declaration]

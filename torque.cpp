@@ -21,6 +21,8 @@
 #include <QDialog>
 #include <QMenuBar>
 #include <QtMath>
+#include <QFileDialog>
+
 
 
 static const QLatin1String serviceUuid("00001101-0000-1000-8000-00805f9b34fb");
@@ -45,7 +47,7 @@ Torque::Torque(QWidget *parent)
     connect(ui->pressionPlusButton, SIGNAL(clicked()), this, SLOT(plusClicked()));
     connect(ui->configureButton, SIGNAL(clicked()), this, SLOT(configureClicked()));
     connect(ui->recordButton,SIGNAL(clicked()),this,SLOT(recordClicked()));
-    connect(ui->envoyerButton,SIGNAL(clicked()),this, SLOT(envoyerClicked()));
+    connect(ui->sauverButton,SIGNAL(clicked()),this, SLOT(sauverClicked()));
 
     recordTimer = new QTimer(this);
         connect(recordTimer, SIGNAL(timeout()), this, SLOT(stopRecord()));
@@ -331,36 +333,55 @@ void Torque::configureClicked()
 }
 //! [configureClicked]
 
-//! [envoyerClicked]
-void Torque::envoyerClicked()
+//! [sauverClicked]
+void Torque::sauverClicked()
 {
-    qDebug()<<"envoyerClicked";
+    qDebug()<<"sauverClicked";
     qDebug()<<"Min pression:"<<pressionCompteurMin;
     qDebug()<<"Max pression:"<<pressionCompteurMax;
     int palierpression = 0;
 
-    for ( int i=pressionCompteurMin; i < pressionCompteurMax+1; i++ )
+    QString saveFile = "~/"+serieMachine+"-"+serieMachine+".csv";
+    fichierSauvegarde = QFileDialog::getSaveFileName(
+        this,
+        tr("Sélectionnez un dossier de sauvegarde"),
+        saveFile,
+        tr("Text (*.csv)")
+     );
+    qDebug()<<"fichier: "<<fichierSauvegarde;
+    QFile data(fichierSauvegarde);
+    if(data.open(QFile::WriteOnly |QFile::Truncate))
     {
-        qDebug()<<"Nb samples "<<compteurSamples[i]<<" pour palier:"<<i;
-        sommeTorque = 0;
+        QTextStream output(&data);
+        output.setCodec("UTF-8");
 
-        for (int j=0; j<compteurSamples[i]; j++)
+        output<<QString("Proprietaire")<<";"<<proprietaire<<"\n";
+        output<<QString("Machine")<<";"<<QString(serieMachine)<<"\n";
+        output<<QString("Tete")<<";"<<QString(serieTete)<<"\n";
+        output<<";\n";
+
+        for ( int i=pressionCompteurMin; i < pressionCompteurMax+1; i++ )
         {
-            sommeTorque +=torqueArray[i][j];
+            qDebug()<<"Nb samples "<<compteurSamples[i]<<" pour palier:"<<i;
+            sommeTorque = 0;
+
+            for (int j=0; j<compteurSamples[i]; j++)
+            {
+                sommeTorque +=torqueArray[i][j];
+            }
+
+            if (compteurSamples[i]>0)
+                sommeTorque = round(sommeTorque / compteurSamples[i]);
+
+            palierpression = i*pressionPas;
+
+            if ( palierpression >= pression_max[machine] )
+            {
+                palierpression = pression_max[machine];
+            }
+            output<<palierpression<<";"<<sommeTorque<<"\n";
+            qDebug()<<"Torque moy:"<<sommeTorque<<" pour palier no:"<<i<<" et pression:"<<palierpression;
         }
-
-        if (compteurSamples[i]>0)
-            sommeTorque = round(sommeTorque / compteurSamples[i]);
-
-        palierpression = i*pressionPas;
-
-        if ( palierpression >= pression_max[machine] )
-        {
-            palierpression = pression_max[machine];
-        }
-        qDebug()<<"Torque moy:"<<sommeTorque<<" pour palier no:"<<i<<" et pression:"<<palierpression;
     }
-
-
 }
-//! [envoyerClicked]
+//! [sauverClicked]

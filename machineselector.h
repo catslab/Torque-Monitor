@@ -22,7 +22,7 @@ public:
 
 private slots:
     void effacer();
-    void fichier();
+
 
 private:
     Ui::machineSelector *ui;
