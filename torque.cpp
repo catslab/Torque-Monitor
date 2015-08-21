@@ -344,7 +344,7 @@ void Torque::sauverClicked()
     qDebug()<<"Max pression:"<<pressionCompteurMax;
     int palierpression = 0;
 
-    QString saveFile = "~/"+serieMachine+"-"+serieMachine+".csv";
+    QString saveFile = "/media/calibration/"+serieMachine+"-"+serieTete+".csv";
     fichierSauvegarde = QFileDialog::getSaveFileName(
         this,
         tr("Sélectionnez un dossier de sauvegarde"),
@@ -362,7 +362,7 @@ void Torque::sauverClicked()
         output<<QString("Machine")<<";"<<QString(serieMachine)<<"\n";
         output<<QString("Tete")<<";"<<QString(serieTete)<<"\n";
         output<<";\n";
-
+        output<<ui->pressionZero->value()<<";"<<0<<"\n";
         for ( int i=pressionCompteurMin; i < pressionCompteurMax+1; i++ )
         {
             qDebug()<<"Nb samples "<<compteurSamples[i]<<" pour palier:"<<i;
