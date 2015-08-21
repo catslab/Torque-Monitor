@@ -246,7 +246,7 @@ void Torque::plusClicked()
 
     pressionCompteur ++;
     pressionCourant = pressionCompteur*pressionPas;
-    if ( pressionCourant >= pression_max[machine] )
+    if ( pressionCourant >= pression_max[machine] || pressionCourant+250 > pression_max[machine] )
     {
         pressionCourant = pression_max[machine];
         ui->pressionPlusButton->setDisabled(true);
@@ -378,7 +378,7 @@ void Torque::sauverClicked()
 
             palierpression = i*pressionPas;
 
-            if ( palierpression >= pression_max[machine] )
+            if ( palierpression >= pression_max[machine] || palierpression+250 > pression_max[machine])
             {
                 palierpression = pression_max[machine];
             }
